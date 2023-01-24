@@ -46,6 +46,4 @@ class Feeding(models.Model):
         return f'{self.get_meal_display()} on {self.date}'
 
 
-# class Feeding(models.Model):
-#   date = models.DateField()
-#   meal = models.CharField(max_length=1)
+
