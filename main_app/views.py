@@ -1,23 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from .models import Finch
+from .models import Finch, Toys
+from .forms import FeedingForm
 
-
-# from django.http import HttpResponse
-# Create your views here.
-
-# class Finch:  # Note that parens are optional if not inheriting from another class
-#   def __init__(self, name, breed, color, age):
-#     self.name = name
-#     self.breed = breed
-#     self.color = color
-#     self.age = age
-
-# finches = [
-#   Finch('Pierre', 'Eurasian Bullfinch', 'Orange, Black, Grey', 4),
-#   Finch('Dionysios', 'American Goldfinch', 'Black, Yellow', 7),
-#   Finch('Bob', 'European Greenfinch', 'Green, Yellow', 5)
-# ]
 
 
 def home(request):
@@ -32,7 +17,19 @@ def finches_index(request):
 
 def finches_detail(request, finch_id):
   finch = Finch.objects.get(id=finch_id)
-  return render(request, 'finches/detail.html', { 'finch': finch })
+  feedings_form = FeedingForm()
+  return render(request, 'finches/detail.html', { 
+    'finch': finch,
+    'feedings_form': feedings_form, 
+    })
+
+def add_feedings(request, finch_id):
+    form = FeedingForm(request.POST)
+    if form.is_valid():
+        new_feedings = form.save(commit=False)
+        new_feedings.finch_id= finch_id
+        new_feedings.save()
+    return redirect('detail', finch_id=finch_id)  
 
 class FinchCreate(CreateView):
   model = Finch
